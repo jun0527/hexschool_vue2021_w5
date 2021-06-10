@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <div class="container py-4" id="app">
+    <div class="productListArea row gx-4 mb-5">
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col" v-for="item in products" key="item.id">
+          <div class="card">
+            <div class="imgArea rounded-top" :style="{'background-image':`url(${item.imageUrl})`}"></div>
+            <div class="card-body">
+              <h5 class="card-title">{{item.title}}</h5>
+              <p class="card-text text-decoration-line-through mb-2">原價：NT${{item.origin_price}}</p>
+              <p class="card-text fs-4">特價：NT${{item.price}}<span class="fs-6 mx-2">(每{{item.unit}})</span></p>
+            </div>
+            <div class="d-grid p-0 bg-white btnArea">
+              <button type="button" class="btn btn-outline-warning rounded-0"
+                @click="openModal('productModal',item.id)">詳細內容</button>
+              <button type="button" class="btn btn-danger rounded-0 rounded-bottom py-2" @click="addCart(item.id)"
+                :disabled="isLoading.addCart===`${item.id}`"><span class="spinner-border spinner-border-sm"
+                  role="status" aria-hidden="true" v-if="isLoading.addCart===`${item.id}`"></span>加入購物車</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <product-modal ref="productModal" @add-cart="addCart"></product-modal>
+    <div class="cartList mb-5">
+      <h2 class="text-center">購物車列表</h2>
+      <div class="d-flex justify-content-end mb-2">
+        <button type="button" class="btn btn-outline-danger" @click="openModal('deleteAll','','')">清空購物車</button>
+      </div>
+      <table class="productList table table-striped table-hover">
+        <thead>
+          <tr>
+            <th width="5%" scope="col">刪除</th>
+            <th width="45%" scope="col" class="productTitle">品名</th>
+            <th width="15%" scope="col">單價</th>
+            <th width="20%" scope="col">數量/單位</th>
+            <th width="15%" scope="col">總價</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item,index) in cartData.carts">
+            <td><button type="button" class="deleteCartOne" @click="openModal('deleteOne', item.id,index)"><i
+                  class="far fa-trash-alt"></i></button>
+            </td>
+            <td class="productTitle">{{item.product.title}}</th>
+            <td>{{item.product.price}}</td>
+            <td>
+              <div class="qtyTableArea">
+                <button type="button" @click="changeQty('reduce', item.id, index)"
+                  :disabled="isLoading.changeQty===item.id">
+                  <i ref="reduce" class="fas fa-caret-left"></i>
+                </button>
+                <span>{{item.qty}}</span>
+                <button type="button" @click="changeQty('add', item.id, index)"
+                  :disabled="isLoading.changeQty===item.id">
+                  <i class="fas fa-caret-right"></i>
+                </button>
+                {{item.product.unit}}
+              </div>
+            </td>
+            <td>{{item.final_total}}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="totalText">總金額</td>
+            <td class="totalText">{{cartData.final_total}}</td>
+          </tr>
+        </tfoot>
+      </table>
+      <delete-modal ref="deleteModal" @get-cart-data="getCartData"></delete-modal>
+    </div>
+    <div class="containerInfoArea">
+      <h2 class="text-center">購買人資料</h2>
+    </div>
+    <v-form class="containerForm" v-slot="{errors}" @submit="openModal('submitModal')">
+      {{errors}}
+      <div class="formGroup">
+        <label for="email" class="form-label">email</label>
+        <v-field type="email" name="email" id="email" class="form-control" :class="{'is-invalid':errors['email']}"
+          rules="required|email" v-model="user.email"></v-field>
+        <error-message name="email" class="invalid-feedback"></error-message>
+      </div>
+      <div class="formGroup">
+        <label for="name" class="form-label">收件人姓名</label>
+        <v-field type="text" name="收件人姓名" id="name" class="form-control" :class="{'is-invalid':errors['收件人姓名']}"
+          rules="required" v-model="user.name"></v-field>
+        <error-message name="收件人姓名" class="invalid-feedback"></error-message>
+      </div>
+      <div class="formGroup">
+        <label for="tel" class="form-label">收件人電話</label>
+        <v-field type="text" name="收件人電話" id="tel" class="form-control" :class="{'is-invalid':errors['收件人電話']}"
+          :rules="isPhone" v-model="user.tel"></v-field>
+        <error-message name="收件人電話" class="invalid-feedback"></error-message>
+      </div>
+      <div class="formGroup">
+        <label for="address" class="form-label">收件人地址</label>
+        <v-field type="text" name="收件人地址" id="address" class="form-control" :class="{'is-invalid':errors['收件人地址']}"
+          rules="required" v-model="user.address"></v-field>
+        <error-message name="收件人地址" class="invalid-feedback"></error-message>
+      </div>
+      <div class="formGroup">
+        <label for="message" class="form-label">留言</label>
+        <v-field type="text" name="留言" id="message" class="form-control" v-model="orderMessage" as="textarea"></v-field>
+      </div>
+      <div class="formGroup d-flex justify-content-end">
+        <button type="submit" class="btn btn-primary">送出訂單</button>
+      </div>
+    </v-form>
+    <submit-modal ref="submitModal" @get-cart-data="getCartData" @clear-data="clearData"></submit-modal>
+  </div>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vee-validate/4.1.17/vee-validate.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@vee-validate/i18n@4.1.17/dist/vee-validate-i18n.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@vee-validate/rules@4.1.17/dist/vee-validate-rules.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+    integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+  <script src="js/all.js" type="module"></script>
+</body>
+
+</html>
