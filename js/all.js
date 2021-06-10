@@ -132,7 +132,6 @@ const app = Vue.createApp({
         const phoneNumber = /^(09)[0-9]{8}$/
         return phoneNumber.test(value) ? true : '收件人電話 須為正確的電話號碼'
       }
-
     },
     clearData() {
       this.user.name = "";
@@ -140,6 +139,9 @@ const app = Vue.createApp({
       this.user.tel = "";
       this.user.address = "";
       this.orderMessage = "";
+    },
+    text() {
+      console.log(VForm, VeeValidate)
     }
   },
   mounted() {

@@ -59,7 +59,7 @@
               <div class="qtyTableArea">
                 <button type="button" @click="changeQty('reduce', item.id, index)"
                   :disabled="isLoading.changeQty===item.id">
-                  <i ref="reduce" class="fas fa-caret-left"></i>
+                  <i class="fas fa-caret-left"></i>
                 </button>
                 <span>{{item.qty}}</span>
                 <button type="button" @click="changeQty('add', item.id, index)"
@@ -88,6 +88,7 @@
       <h2 class="text-center">購買人資料</h2>
     </div>
     <v-form class="containerForm" v-slot="{errors}" @submit="openModal('submitModal')">
+      {{errors}}
       <div class="formGroup">
         <label for="email" class="form-label">email</label>
         <v-field type="email" name="email" id="email" class="form-control" :class="{'is-invalid':errors['email']}"

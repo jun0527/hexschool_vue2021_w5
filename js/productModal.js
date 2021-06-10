@@ -81,7 +81,7 @@ export default {
               <p class="fs-6 text-decoration-line-through mb-1">原價：NT$ {{ tempData.origin_price }}</p>
               <p class="fs-3">特價：NT$ {{ tempData.price }}<span class="fs-6 mx-1">(每{{tempData.unit}})</span></p>
               <div class="d-flex justify-content-between align-items-end">
-                <p class="qtyArea d-flex align-items-center mb-0">購買數量：<i ref="reduce" class="fas fa-caret-left" @click="changeQty('reduce')"></i><span>{{tempQty}}</span><i class="fas fa-caret-right" @click="changeQty('add')"></i></p>
+                <p class="qtyArea d-flex align-items-center mb-0">購買數量：<i class="fas fa-caret-left" @click="changeQty('reduce')"></i><span>{{tempQty}}</span><i class="fas fa-caret-right" @click="changeQty('add')"></i></p>
                 <button type="button" class="btn btn-danger py-2" @click="addCart(tempData.id,tempQty)"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="isLoading.addCart"></span>加入購物車</button>
               </div>
             </div>
