@@ -88,7 +88,6 @@
       <h2 class="text-center">購買人資料</h2>
     </div>
     <v-form class="containerForm" v-slot="{errors}" @submit="openModal('submitModal')">
-      {{errors}}
       <div class="formGroup">
         <label for="email" class="form-label">email</label>
         <v-field type="email" name="email" id="email" class="form-control" :class="{'is-invalid':errors['email']}"

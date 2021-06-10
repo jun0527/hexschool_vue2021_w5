@@ -37,6 +37,7 @@ export default {
       this.productModal.hide();
       this.tempData = {};
       this.tempQty = 0;
+      this.isLoading.addCart = false;
     },
     changeQty(status) {
       if (status === "reduce") {
@@ -49,13 +50,13 @@ export default {
     },
     addCart(productId, qty) {
       this.isLoading.addCart = true;
+      console.log(this.isLoading.addCart);
       if (qty === 0) {
         alert("商品數量不得為0！");
         this.isLoading.addCart = false;
         return;
       }
       this.$emit("add-cart", productId, qty);
-      this.isLoading.addCart = false;
     }
   },
   template: `<div ref="productModal" class="modal fade productModal" tabindex="-1">
