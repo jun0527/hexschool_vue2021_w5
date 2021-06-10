@@ -36,7 +36,7 @@
     <div class="cartList mb-5">
       <h2 class="text-center">購物車列表</h2>
       <div class="d-flex justify-content-end mb-2">
-        <button type="button" class="btn btn-outline-danger" @click="openModal('deleteAll','','')">清空購物車</button>
+        <button type="button" class="btn btn-outline-danger" @click="openModal('deleteAll')">清空購物車</button>
       </div>
       <table class="productList table table-striped table-hover">
         <thead>
@@ -88,7 +88,6 @@
       <h2 class="text-center">購買人資料</h2>
     </div>
     <v-form class="containerForm" v-slot="{errors}" @submit="openModal('submitModal')">
-      {{errors}}
       <div class="formGroup">
         <label for="email" class="form-label">email</label>
         <v-field type="email" name="email" id="email" class="form-control" :class="{'is-invalid':errors['email']}"
