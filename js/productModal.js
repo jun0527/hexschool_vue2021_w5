@@ -1,11 +1,11 @@
+const url = "https://vue3-course-api.hexschool.io/";
+const path = "jun0527";
 export default {
   data() {
     return {
-      url: "https://vue3-course-api.hexschool.io/",
-      path: "jun0527",
       productModal: "",
       tempData: {},
-      tempQty: 0,
+      tempQty: 1,
       isLoading: {
         modalArea: true,
         addCart: false
@@ -19,7 +19,7 @@ export default {
     openModal(productId) {
       this.isLoading.modalArea = true;
       this.productModal.show();
-      axios.get(`${this.url}api/${this.path}/product/${productId}`)
+      axios.get(`${url}api/${path}/product/${productId}`)
         .then((res) => {
           if (res.data.success) {
             this.tempData = res.data.product;
@@ -36,7 +36,7 @@ export default {
     closeModal() {
       this.productModal.hide();
       this.tempData = {};
-      this.tempQty = 0;
+      this.tempQty = 1;
       this.isLoading.addCart = false;
     },
     changeQty(status) {

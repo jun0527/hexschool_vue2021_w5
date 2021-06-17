@@ -1,8 +1,8 @@
+const url = "https://vue3-course-api.hexschool.io/";
+const path = "jun0527";
 export default {
   data() {
     return {
-      url: "https://vue3-course-api.hexschool.io/",
-      path: "jun0527",
       submitModal: "",
       user: {},
       message: "",
@@ -33,7 +33,7 @@ export default {
           message: this.message
         }
       };
-      axios.post(`${this.url}api/${this.path}/order`, obj)
+      axios.post(`${url}api/${path}/order`, obj)
         .then((res) => {
           if (res.data.success) {
             alert("訂單送出成功！");

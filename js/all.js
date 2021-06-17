@@ -1,11 +1,11 @@
 import productModal from './productModal.js';
 import deleteModal from './deleteModal.js';
 import submitModal from './submitModal.js';
+const url = "https://vue3-course-api.hexschool.io/";
+const path = "jun0527";
 const app = Vue.createApp({
   data() {
     return {
-      url: "https://vue3-course-api.hexschool.io/",
-      path: "jun0527",
       products: [],
       cartData: {},
       isLoading: {
@@ -19,7 +19,8 @@ const app = Vue.createApp({
         tel: "",
         address: "",
       },
-      orderMessage: ""
+      orderMessage: "",
+      noCart: true
     }
   },
   components: {
@@ -29,7 +30,7 @@ const app = Vue.createApp({
   },
   methods: {
     getProductData() {
-      axios.get(`${this.url}api/${this.path}/products`)
+      axios.get(`${url}api/${path}/products`)
         .then((res) => {
           if (res.data.success) {
             this.products = res.data.products;
@@ -40,10 +41,15 @@ const app = Vue.createApp({
         })
     },
     getCartData() {
-      axios.get(`${this.url}api/${this.path}/cart`)
+      axios.get(`${url}api/${path}/cart`)
         .then((res) => {
           if (res.data.success) {
             this.cartData = res.data.data;
+            if(this.cartData.carts.length === 0){
+              this.noCart = true;
+            }else{
+              this.noCart = false;
+            }
           }
         })
         .catch((err) => {
@@ -74,7 +80,7 @@ const app = Vue.createApp({
           qty: qty
         }
       }
-      axios.post(`${this.url}api/${this.path}/cart`, obj)
+      axios.post(`${url}api/${path}/cart`, obj)
         .then((res) => {
           if (res.data.success) {
             alert("加入購物車成功！");
@@ -97,7 +103,7 @@ const app = Vue.createApp({
       this.tempQty = this.cartData.carts[index].qty;
       if (status === "reduce") {
         if (this.tempQty - 1 === 0) {
-          openModal('deleteModal', cartId, index);
+          this.openModal('deleteOne', cartId, index);
           return;
         }
         this.tempQty--;
@@ -110,7 +116,7 @@ const app = Vue.createApp({
           qty: this.tempQty
         }
       }
-      axios.put(`${this.url}api/${this.path}/cart/${cartId}`, obj)
+      axios.put(`${url}api/${path}/cart/${cartId}`, obj)
         .then((res) => {
           if (res.data.success) {
             alert("更改購物車數量成功！");
@@ -132,6 +138,7 @@ const app = Vue.createApp({
         const phoneNumber = /^(09)[0-9]{8}$/
         return phoneNumber.test(value) ? true : '收件人電話 須為正確的電話號碼'
       }
+
     },
     clearData() {
       this.user.name = "";
@@ -139,9 +146,6 @@ const app = Vue.createApp({
       this.user.tel = "";
       this.user.address = "";
       this.orderMessage = "";
-    },
-    text() {
-      console.log(VForm, VeeValidate)
     }
   },
   mounted() {

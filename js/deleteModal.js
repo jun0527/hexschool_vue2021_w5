@@ -1,8 +1,8 @@
+const url = "https://vue3-course-api.hexschool.io/";
+const path = "jun0527";
 export default {
   data() {
     return {
-      url: "https://vue3-course-api.hexschool.io/",
-      path: "jun0527",
       deleteModal: "",
       deleteProductTitle: "",
       deleteCartId: "",
@@ -23,7 +23,7 @@ export default {
       this.deleteProductTitle = "";
     },
     deleteCart() {
-      axios.delete(`${this.url}api/${this.path}/cart/${this.deleteCartId}`)
+      axios.delete(`${url}api/${path}/cart/${this.deleteCartId}`)
         .then((res) => {
           if (res.data.success) {
             alert(`刪除購物車中${this.deleteProductTitle}成功！`);
@@ -39,7 +39,7 @@ export default {
         })
     },
     deleteCartAll() {
-      axios.delete(`${this.url}api/${this.path}/carts`)
+      axios.delete(`${url}api/${path}/carts`)
         .then((res) => {
           if (res.data.success) {
             alert("成功清空購物車！");
